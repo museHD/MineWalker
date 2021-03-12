@@ -2,6 +2,7 @@ import itertools
 import pandas
 import numpy as np
 from random import randint
+import msvcrt
 
 class Game(object):
 
@@ -30,9 +31,37 @@ class Game(object):
 			thisRow = []
 		return grid
 
+	def move_player(direction):
+
+
+
+	def capture_input(self):
+		key_stroke = msvcrt.getch()
+		try:
+			key_stroke = (str(key_stroke, 'utf-8'))
+		except:
+			pass
+
+	def run(self):
+		self.hidden_grid = self.gen_grid()
+		self.player_grid = self.gen_grid()
+
+		self.player_grid[0][0] = "P"
+		while True:
+			if msvcrt.kbhit():
+				self.capture_input()
+		# REFER TO 
+		"""import msvcrt
+		while True:
+		    if msvcrt.kbhit():
+		        key_stroke = msvcrt.getch()
+		        print(key_stroke)   # will print which key is pressed
+
+		from https://www.codespeedy.com/how-to-detect-which-key-is-pressed-in-python/
+		        """
 
 myGame = Game()
-myGame.gen_grid()
+myGame.run()
 
 
 """ SNIPPET using numpy """
