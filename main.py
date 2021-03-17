@@ -1,18 +1,27 @@
 import itertools
-import pandas
+import pandas as pd
 import numpy as np
 from random import randint
 import msvcrt
+import time
+import os, sys
+
 
 class Game(object):
 
 	def __init__(self):
 		self.length = 10
+		self.boxChar = ""
 
 	# Takes a 2D array, converts it to a pandas df and prints it to display
 	# TODO: Find out if the entire grid can be reprinted in console
 	def print_grid(self, grid):
-		df = pandas.DataFrame(grid)
+		# time.sleep(0.5)
+		os.system("cls")
+		# for i in range(9):
+			
+		df = pd.DataFrame(grid)
+		# print(df)
 		print(df.to_string(index=False, header=False))
 
 	# Generates a simple 2d array
@@ -20,36 +29,70 @@ class Game(object):
 
 		grid = []
 		thisRow = []
-		# Box unicode 
-		boxChar = "\u2610"
+
+		# Box character 
+		self.boxChar = "_"
 
 		# Populates a 2D array with box characters
 		for yCols in range(self.length):
 			for xRows in range(self.length):
-				thisRow.append(boxChar)
+				thisRow.append(self.boxChar)
 			grid.append(thisRow)
 			thisRow = []
 		return grid
 
-	def move_player(direction):
+	def move_player(self, direction):
+		# print("pos")
+		if direction == "d":
+			# print('ey')
+			self.player_grid[self.posX][self.posY] = "_"
+			self.posX += 0
+			self.posY += 1
+			self.player_grid[self.posX][self.posY] = "o"
+		elif direction == "a":
+			self.player_grid[self.posX][self.posY] = "_"
+			self.posX += 0
+			self.posY -= 1
+			self.player_grid[self.posX][self.posY] = "o"
+		elif direction == "w":
+			self.player_grid[self.posX][self.posY] = "_"
+			self.posX -= 1
+			self.posY += 0
+			self.player_grid[self.posX][self.posY] = "o"
+		elif direction == "s":
+			self.player_grid[self.posX][self.posY] = "_"
+			self.posX += 1
+			self.posY += 0
+			self.player_grid[self.posX][self.posY] = "o"
 
-
-
-	def capture_input(self):
+	def capture_input(self): 
 		key_stroke = msvcrt.getch()
-		try:
-			key_stroke = (str(key_stroke, 'utf-8'))
-		except:
-			pass
+	# try:
+		key_stroke = (str(key_stroke, 'utf-8'))
+		# print(key_stroke)
+		self.move_player(key_stroke)
+
+
+	# except:
+	# 	pass
 
 	def run(self):
+		run = True 
+
 		self.hidden_grid = self.gen_grid()
 		self.player_grid = self.gen_grid()
 
-		self.player_grid[0][0] = "P"
-		while True:
+		self.posX = 0
+		self.posY = 0
+		self.player_grid[self.posX][self.posY] = "o"
+		self.print_grid(self.player_grid)
+
+		while run:
 			if msvcrt.kbhit():
 				self.capture_input()
+				self.print_grid(self.player_grid)
+
+
 		# REFER TO 
 		"""import msvcrt
 		while True:
