@@ -42,28 +42,46 @@ class Game(object):
 		return grid
 
 	def move_player(self, direction):
+
 		# print("pos")
-		if direction == "d":
-			# print('ey')
-			self.player_grid[self.posX][self.posY] = "_"
-			self.posX += 0
-			self.posY += 1
+		try:
+
+			if direction == "d":
+				# print('ey')
+				self.player_grid[self.posX][self.posY] = "_"
+				self.posX += 0
+				self.posY += 1
+				# self.player_grid[self.posX][self.posY] = "o"
+			elif direction == "a":
+				self.player_grid[self.posX][self.posY] = "_"
+				self.posX += 0
+				self.posY -= 1
+				# self.player_grid[self.posX][self.posY] = "o"
+			elif direction == "w":
+				self.player_grid[self.posX][self.posY] = "_"
+				self.posX -= 1
+				self.posY += 0
+				# self.player_grid[self.posX][self.posY] = "o"
+			elif direction == "s":
+				self.player_grid[self.posX][self.posY] = "_"
+				self.posX += 1
+				self.posY += 0
+				# self.player_grid[self.posX][self.posY] = "o"
+
+			if self.posY == self.length:
+				self.posY -= 1
+			elif self.posY == -1:
+				self.posY += 1
+			if self.posX == self.length:
+				self.posX -= 1
+			elif self.posX == -1:
+				self.posX += 1
+
 			self.player_grid[self.posX][self.posY] = "o"
-		elif direction == "a":
-			self.player_grid[self.posX][self.posY] = "_"
-			self.posX += 0
-			self.posY -= 1
-			self.player_grid[self.posX][self.posY] = "o"
-		elif direction == "w":
-			self.player_grid[self.posX][self.posY] = "_"
-			self.posX -= 1
-			self.posY += 0
-			self.player_grid[self.posX][self.posY] = "o"
-		elif direction == "s":
-			self.player_grid[self.posX][self.posY] = "_"
-			self.posX += 1
-			self.posY += 0
-			self.player_grid[self.posX][self.posY] = "o"
+
+		except IndexError:
+			if self.posY == self.length:
+				self.posY -= 1
 
 	def capture_input(self): 
 		key_stroke = msvcrt.getch()
