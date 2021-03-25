@@ -7,7 +7,7 @@ Exit
 """
 
 import msvcrt
-import os
+import os, sys
 import time
 
 
@@ -38,6 +38,7 @@ class UI(object):
 		pass
 
 	def exit(self):
+		sys.exit("Thank you for playing my game!")
 		pass
 
 	def move(self, direction):
@@ -57,7 +58,7 @@ class UI(object):
 		listIndex = 0
 
 		width, throw = os.get_terminal_size()
-		print(width)
+		# print(width)
 		half = width/2
 
 		os.system("cls")
@@ -75,6 +76,7 @@ class UI(object):
 				print(chars + color.SELECT + color.BLACK + option + color.BASE)
 			else:
 				print(chars + option)
+
 		#test
 
 
@@ -82,23 +84,26 @@ class UI(object):
 	def handle_input(self):
 		# print("handled input")
 		key_stroke = msvcrt.getch()
+		keylist = {"w":-1, "s":+1, "\r":select, " ":select}
+
+		if key_stroke in keylist:
+			self.move(keylist[key_stroke])
+		else:
+			pass
 		try:
 			key_stroke = (str(key_stroke, 'utf-8'))
+
 		except UnicodeDecodeError as e:
 			self.handle_input()
 
 		
 
-		keylist = {"w":-1,"s":+1}
 
 		if key_stroke in keylist:
 			self.move(keylist[key_stroke])  # Research fetching from dictionary
 			# if neither, screen will clear -- fix
 
 	def update(self):
-		# print(update)
-		print('')
-
 		self.handle_input()
 
 
