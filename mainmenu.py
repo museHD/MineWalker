@@ -55,14 +55,26 @@ class UI(object):
 		# print(currentSelection)
 
 		listIndex = 0
+
+		width, throw = os.get_terminal_size()
+		print(width)
+		half = width/2
+
 		os.system("cls")
 
 
+
 		for listIndex, option in enumerate(self.menulist):
+			blankchars = half - len(option)/2
+			chars = ""
+			for x in range(int(blankchars)):
+				chars += " "
+			
+
 			if listIndex == currentSelection:
-				print(color.SELECT + color.BLACK + option + color.BASE)
+				print(chars + color.SELECT + color.BLACK + option + color.BASE)
 			else:
-				print(option)
+				print(chars + option)
 		#test
 
 
@@ -88,7 +100,7 @@ class UI(object):
 		print('')
 
 		self.handle_input()
-		print(os.get_terminal_size())
+
 
 
 
