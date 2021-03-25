@@ -158,7 +158,7 @@ class Game(object):
 		self.player_grid[self.posX][self.posY] = "o"
 		self.print_grid(self.player_grid)
 
-		self.verify_path()
+		#self.verify_path()
 
 		while self.game_state() == "running":
 			if msvcrt.kbhit():
