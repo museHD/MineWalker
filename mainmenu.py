@@ -22,13 +22,17 @@ class color:
 class UI(object):
 
 	def __init__(self):
-		self.menulist = ["Play","Instructions","High Scores","Settings","Credits","Exit"]
+		self.menulist = ["Play","Instructions","Leaderboard","Settings","Credits","Exit"]
 		self.currentSelection = 0
 
 	def play(self):
+		print("WE ARE NOW PLAYING")
+		time.sleep(2)
+
+	def instructions(self):
 		pass
 
-	def highscore(self):
+	def leaderboard(self):
 		pass
 
 	def settings(self):
@@ -71,7 +75,6 @@ class UI(object):
 			for x in range(int(blankchars)):
 				chars += " "
 			
-
 			if listIndex == currentSelection:
 				print(chars + color.SELECT + color.BLACK + option + color.BASE)
 			else:
@@ -84,7 +87,8 @@ class UI(object):
 	def handle_input(self):
 		# print("handled input")
 		key_stroke = msvcrt.getch()
-		keylist = {"w":-1, "s":+1, "\r":select, " ":select}
+
+		keylist = {"w":-1, "s":+1} #"\r":select, " ":select}
 
 		if key_stroke in keylist:
 			self.move(keylist[key_stroke])
@@ -96,7 +100,13 @@ class UI(object):
 		except UnicodeDecodeError as e:
 			self.handle_input()
 
-		
+		# use eval 
+		# use 
+		dispatch = ["self." + menuitem.lower() for menuitem in self.menulist]
+
+		if key_stroke == "\r" or key_stroke == " ":
+			eval(dispatch[self.currentSelection])()
+
 
 
 		if key_stroke in keylist:
