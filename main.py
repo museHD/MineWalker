@@ -99,26 +99,35 @@ class Game(object):
 
 		# Implement Movelist input structure later
 
-		# print("pos")
-		try:
+		# IMPLEMENTING MOVELIST
+		direction = direction.lower()
+		moveList = {"d":(0,1), "a":(0,-1), "w":(-1,0), "s":(1,0)}
 
-			if direction == "d":
-				# print('ey')
-				self.player_grid[self.posX][self.posY] = "_"
-				self.posX += 0
-				self.posY += 1
-			elif direction == "a":
-				self.player_grid[self.posX][self.posY] = "_"
-				self.posX += 0
-				self.posY -= 1
-			elif direction == "w":
-				self.player_grid[self.posX][self.posY] = "_"
-				self.posX -= 1
-				self.posY += 0
-			elif direction == "s":
-				self.player_grid[self.posX][self.posY] = "_"
-				self.posX += 1
-				self.posY += 0
+		if direction in moveList:
+			self.player_grid[self.posX][self.posY] = self.boxChar
+			addX, addY = moveList[direction]
+			self.posX += addX
+			self.posY += addY
+		# # print("pos")
+		# try:
+
+		# 	if direction == "d":
+		# 		# print('ey')
+		# 		self.player_grid[self.posX][self.posY] = "_"
+		# 		self.posX += 0
+		# 		self.posY += 1
+		# 	elif direction == "a":
+		# 		self.player_grid[self.posX][self.posY] = "_"
+		# 		self.posX += 0
+		# 		self.posY -= 1
+		# 	elif direction == "w":
+		# 		self.player_grid[self.posX][self.posY] = "_"
+		# 		self.posX -= 1
+		# 		self.posY += 0
+		# 	elif direction == "s":
+		# 		self.player_grid[self.posX][self.posY] = "_"
+		# 		self.posX += 1
+		# 		self.posY += 0
 
 			if self.posY == self.length:
 				self.posY -= 1
@@ -131,9 +140,9 @@ class Game(object):
 
 			self.player_grid[self.posX][self.posY] = "o"
 
-		except IndexError:
-			if self.posY == self.length:
-				self.posY -= 1
+		# except IndexError:
+		# 	if self.posY == self.length:
+		# 		self.posY -= 1
 
 	def capture_input(self): 
 		key_stroke = msvcrt.getch()
@@ -153,7 +162,7 @@ class Game(object):
 		self.set_mines(self.hidden_grid)
 		self.print_grid(self.hidden_grid)
 		self.player_grid = self.gen_grid()
-		time.sleep(0.25)
+		time.sleep(0.8)
 
 		self.posX = 0
 		self.posY = 0
