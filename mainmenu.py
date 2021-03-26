@@ -10,7 +10,7 @@ import msvcrt
 import os, sys, inspect
 import time
 import pickle
-# import main
+import main
 
 # Simple class that stores ANSI Escape characters for specific colours
 class color:
@@ -35,7 +35,10 @@ class UI(object):
 		os.system("cls")
 
 	def play(self):
-		print("WE ARE NOW PLAYING")
+		self.cls()
+		mygame = main.Game()
+		mygame.run()
+		self.handle_input()
 
 	def instructions(self):
 		# self.cls()

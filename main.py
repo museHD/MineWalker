@@ -197,8 +197,8 @@ class Game(object):
 		from https://www.codespeedy.com/how-to-detect-which-key-is-pressed-in-python/
 		        """
 
-myGame = Game()
-myGame.run()
+# myGame = Game()
+# myGame.run()
 
 
 """ SNIPPET using numpy """
