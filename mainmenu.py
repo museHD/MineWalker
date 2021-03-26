@@ -10,7 +10,7 @@ import msvcrt
 import os, sys
 import time
 
-
+# Simple class that stores ANSI Escape characters for specific colours
 class color:
 	SELECT = '\033[47m'
 	BASE = '\033[0m'
@@ -19,21 +19,24 @@ class color:
 	BLACK = '\033[30m'
 	GREEN = '\033[92m'
 
+# Main menu UI object
 class UI(object):
 
 	def __init__(self):
 		self.menulist = ["Play","Instructions","Leaderboard","Settings","Credits","Exit"]
 		self.currentSelection = 0
 
+	# Functions for each of the menu items
+
 	def play(self):
 		print("WE ARE NOW PLAYING")
 		time.sleep(2)
 
 	def instructions(self):
-		pass
+		print("instructions")
 
 	def leaderboard(self):
-		pass
+		print("kea")
 
 	def settings(self):
 		pass
@@ -45,36 +48,39 @@ class UI(object):
 		sys.exit("Thank you for playing my game!")
 		pass
 
+	# Function that moves the current selection through the menu list
 	def move(self, direction):
 
+		# Copy instance variable to a local var and add the direction 
 		currentSelection = self.currentSelection
 		currentSelection += direction
 
+		# Conditions to prevent menu list from wrapping around 
 		if currentSelection > len(self.menulist)-1:
 			currentSelection -= 1
 		elif currentSelection < 0:
 			currentSelection += 1
 
-		# print(currentSelection)
 		self.currentSelection = currentSelection
 		# print(currentSelection)
 
 		listIndex = 0
 
-		width, throw = os.get_terminal_size()
-		# print(width)
+		width= os.get_terminal_size().columns
 		half = width/2
+
+		# TODO: Call cls right before printing to remove flicker
 
 		os.system("cls")
 
-
-
+		# Add padding to center menu items
 		for listIndex, option in enumerate(self.menulist):
 			blankchars = half - len(option)/2
 			chars = ""
 			for x in range(int(blankchars)):
 				chars += " "
 			
+			# Highlight selected menu lists
 			if listIndex == currentSelection:
 				print(chars + color.SELECT + color.BLACK + option + color.BASE)
 			else:
@@ -86,24 +92,25 @@ class UI(object):
 
 	def handle_input(self):
 		# print("handled input")
+
 		key_stroke = msvcrt.getch()
+		keylist = {"w":-1, "s":+1}
 
-		keylist = {"w":-1, "s":+1} #"\r":select, " ":select}
-
+		# Try sending keystroke to the move function without encoding it to utf-8. Might be useful for arrow key implementation later
 		if key_stroke in keylist:
 			self.move(keylist[key_stroke])
 		else:
 			pass
 		try:
 			key_stroke = (str(key_stroke, 'utf-8'))
-
 		except UnicodeDecodeError as e:
 			self.handle_input()
 
-		# use eval 
-		# use 
+		# Contains a list of all menu items with lowercase letters to match the specific functions created for them.
 		dispatch = ["self." + menuitem.lower() for menuitem in self.menulist]
 
+
+		# If Enter or Spacebar is pressed, the currently selected function from the menu list is called using eval
 		if key_stroke == "\r" or key_stroke == " ":
 			eval(dispatch[self.currentSelection])()
 

@@ -46,6 +46,7 @@ class Game(object):
 			thisRow = []
 		return grid
 
+	# Currently does not work -- TODO: Implement DFS search 
 	def verify_path(self):
 		hidden = self.hidden_grid
 		spotPath = []
@@ -76,7 +77,7 @@ class Game(object):
 
 
 
-
+	# Randomly set mines to the 
 	def set_mines(self,grid):
 		nMines = 15
 		for mines in range(nMines):
@@ -94,6 +95,7 @@ class Game(object):
 
 
 	def move_player(self, direction):
+
 
 		# Implement Movelist input structure later
 
