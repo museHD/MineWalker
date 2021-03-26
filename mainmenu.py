@@ -9,9 +9,13 @@ Exit
 import msvcrt
 import os, sys, inspect
 import time
+import pickle
+# import main
 
 # Simple class that stores ANSI Escape characters for specific colours
 class color:
+	BOLD = '\u001b[1m'
+	UNDERLINE = '\u001b[4m'
 	SELECT = '\033[47m'
 	BASE = '\033[0m'
 	RED = '\033[91m'
@@ -27,25 +31,25 @@ class UI(object):
 		self.currentSelection = 0
 
 	# Functions for each of the menu items
-	def cls(self):
+	def cls(self, type = 0):
 		os.system("cls")
 
 	def play(self):
 		print("WE ARE NOW PLAYING")
 
 	def instructions(self):
-		self.cls()
+		# self.cls()
 
-		instructions = """Welcome to MineWalker!\n\nObjective:
+		instructions = """Welcome to MineWalker!\n\n{0}Objective:{1}
 		\nReach the end column of the minefield without setting off any mines.\n
-		\nHow to Play:
+		\n{2}How to Play:{3}
 		\nThe position of each mine will be shown to you for a small amount of time depending on your level of difficulty.
 		\nRemember where the mines are and navigate the minefield using W A S D to get to the end column.\n
-		\nSpecial Abilities:
+		\n{4}Special Abilities:{5}
 		\nQ --> Scan for mines around you
-		\nE --> Throw a blanket to any location and detonate any mines to make those squares safe for future travel"""
+		\nE --> Throw a blanket to any location and detonate any mines to make those squares safe for future travel""".format(color.UNDERLINE, color.BASE, color.UNDERLINE, color.BASE, color.UNDERLINE, color.BASE)
 		print(instructions)
-		print("\n\n[  Press ANY KEY to Return to Main Menu  ]")
+		print("\n\n[ Press ANY KEY to Return to Main Menu ]")
 		self.handle_input()
 
 	def leaderboard(self):
@@ -70,7 +74,7 @@ class UI(object):
 		# TODO: Call cls right before printing to remove flicker
 		# toBePrinted = []
 		
-		os.system("cls")
+		self.cls()
 		# Add padding to center menu items
 		for listIndex, option in enumerate(menulist):
 			blankchars = half - len(option)/2
@@ -122,16 +126,19 @@ class UI(object):
 		try:
 			key_stroke = (str(key_stroke, 'utf-8'))
 		except UnicodeDecodeError as e:
-			self.handle_input()
+			pass
 
 		# Contains a list of all menu items with lowercase letters to match the specific functions created for them.
 		dispatch = ["self." + menuitem.lower() for menuitem in self.menulist]
 
+		# If the handle input function is not called from update, clear the screen and default to the main menu list
 		if inspect.stack()[1][3] != "update":
+			self.cls(1)
 			self.print_list(self.menulist)
 
 		# If Enter or Spacebar is pressed, the currently selected function from the menu list is called using eval
 		elif key_stroke == "\r" or key_stroke == " ":
+			self.cls(1)
 			eval(dispatch[self.currentSelection])()
 
 		elif key_stroke in keylist:
