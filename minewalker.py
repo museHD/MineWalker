@@ -24,7 +24,15 @@ class Game(object):
 		self.displayInterval = 0.8
 		self.path = []
 		self.minePos = []
+		self.scanChar = "*"
 
+
+	def restrict(self, n, low, high):
+		if n < low:
+			n += (low - n)
+		if n > high:
+			n -= (n - high)
+		return n
 	# Takes a 2D array, converts it to a pandas df and prints it to display
 	# TODO: Find out if the entire grid can be reprinted in console
 	def print_grid(self, grid):
@@ -170,7 +178,7 @@ class Game(object):
 		# IMPLEMENTING MOVELIST
 		direction = direction.lower()
 		moveList = {"d":(0,1), "a":(0,-1), "w":(-1,0), "s":(1,0)}
-
+		poslist = [(0,1),(0,-1),(-1,0),(1,0)]
 		if direction in moveList:
 			self.player_grid[self.posX][self.posY] = self.pathChar
 			# self.myPath.append((self.posX, self.posY))
@@ -189,6 +197,54 @@ class Game(object):
 
 			self.player_grid[self.posX][self.posY] = self.playerChar
 			# self.player_grid[]
+
+		
+		elif direction == "q":
+			for scanPoint in poslist:
+				addX, addY = scanPoint
+				addX += self.posX
+				addY += self.posY
+				addX = self.restrict(addX,0,self.length-1)
+				addY = self.restrict(addY,0,self.length-1)
+
+				if (addX,addY) in self.minePos:
+					self.player_grid[addX][addY] = self.scanChar
+				else:
+					self.player_grid[addX][addY] = self.pathChar
+
+			up = self.posY-1
+			down = self.posY+1
+			left = self.posX-1
+			right = self.posX+1
+
+			if up < 0:
+				up+=1
+			if down == self.length:
+				down -= 1
+			if left < 0:
+				left += 1
+			if right == self.length:
+				right+=1
+
+			if self.hidden_grid[right][down] == self.mineChar:
+				self.player_grid[right][down] = self.scanChar
+			else:
+				self.player_grid[right][down] = self.pathChar
+
+			if self.hidden_grid[left][up] == self.mineChar:
+				self.player_grid[left][up] = self.scanChar
+			else:
+				self.player_grid[left][up] = self.pathChar
+
+			if self.hidden_grid[left][down] == self.mineChar:
+				self.player_grid[left][down] = self.scanChar
+			else:
+				self.player_grid[left][down] = self.pathChar
+
+			if self.hidden_grid[right][up] == self.mineChar:
+				self.player_grid[right][up] = self.scanChar
+			else:
+				self.player_grid[right][up] = self.pathChar
 
 	def capture_input(self): 
 		key_stroke = msvcrt.getch()
