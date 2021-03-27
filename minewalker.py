@@ -62,8 +62,15 @@ class Game(object):
 			self.minePos.append((mineX,mineY))
 
 
-	def dfs(self, locations):
-		if 
+	def dfs(self, x = 0, y = 0):
+		x += 1
+		y += 1
+		if x == self.length:
+			x-=1
+		if y == self.length:
+			y-=1
+		
+		
 
 	# Currently does not work -- TODO: Implement DFS search 
 	def verify_path(self):
@@ -74,7 +81,7 @@ class Game(object):
 
 		myPath = []
 		# noPath = True
-		toVisit = []
+		self.toVisit = []
 		for x in range(self.length):
 			for y in range(self.length):
 				toVisit.append((x,y))
