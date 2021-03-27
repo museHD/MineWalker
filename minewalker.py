@@ -1,11 +1,12 @@
-import itertools
+# import itertools
 import pandas as pd
-import numpy as np
+# import numpy as np
 from random import randint
 import msvcrt
 import time
 import os, sys
 import random
+import copy
 
 class color:
    GREEN = '\033[92m'
@@ -20,7 +21,7 @@ class Game(object):
 		self.pathChar = "."
 		self.mineChar = "#"
 		self.nMines = 15
-		self.displayInterval = 0.6
+		self.displayInterval = 0.8
 		self.path = []
 		self.minePos = []
 
@@ -29,7 +30,7 @@ class Game(object):
 	def print_grid(self, grid):
 		# time.sleep(0.5)
 		os.system("cls")
-		print("top")
+		print()
 
 		df = pd.DataFrame(grid)
 		# print(df)
@@ -79,7 +80,9 @@ class Game(object):
 
 	def dfs(self, x = 0, y = 0):
 		toVisit = self.toVisit
+		self.hiddencopy = copy.copy(self.hidden_grid)
 		self.hiddencopy = self.hidden_grid
+
 		if x == -1:
 			x += 1
 		if y == -1:
@@ -100,6 +103,7 @@ class Game(object):
 		up = (x-1,y)
 		left = (x, y-1)
 
+		# tuple vs list optimisation
 		options = (right, down, up, left)
 
 		for option in options:
@@ -108,10 +112,10 @@ class Game(object):
 				x,y = option
 				toVisit.remove(option)
 				self.hiddencopy[x][y] = self.pathChar
-				self.update_grid(self.hiddencopy)
-				time.sleep(0.1)
+				# self.update_grid(self.hiddencopy)
+				# time.sleep(0.1)
 				if x == self.length-1 and y == self.length-1:
-					print("FOUnd")
+					# print("FOUnd")
 					# time.sleep(5)
 					return 0
 				else:
@@ -121,6 +125,7 @@ class Game(object):
 
 	# Calls above DFS to find path
 	def verify_path(self):
+		# hidden = copy.copy(self.hidden_grid)
 		hidden = self.hidden_grid
 		spotPath = []
 		x = 0
@@ -139,35 +144,11 @@ class Game(object):
 				# print(eachMine)
 				self.toVisit.remove(eachMine)
 		if self.dfs() == 0:
-			print("YES")
+			# print("YES")
+			return 0
 		else:
-			print("NO")
-		# print("\n\n")
-		# print(toVisit)
-		# time.sleep(2)
-
-		'''
-		while noPath == True:
-			if hidden[x+1][y] == self.mineChar:
-
-				if hidden[x][y+1] == self.mineChar:
-
-					print("DED")
-					break
-				y = y+1
-			else:
-				x = x+1
-			point = (x,y)
-			if x == self.length and y == self.length:
-				noPath = False
-				print(myPath)
-				print("LES GO")
-				break
-			myPath.append(point)
-
-		'''
-
-
+			print('no')
+			return 1
 
 	def game_state(self):
 		state = "running"
@@ -211,30 +192,59 @@ class Game(object):
 
 	def capture_input(self): 
 		key_stroke = msvcrt.getch()
-	# try:
-		key_stroke = (str(key_stroke, 'utf-8'))
-		# print(key_stroke)
-		self.move_player(key_stroke)
+		if ord(key_stroke) == 224:
+			key = ord(msvcrt.getch())
+			if key == 80:
+				key_stroke = b's'
+			elif key == 72:
+				key_stroke = b'w'
+			elif key == 75:
+				key_stroke = b'a'
+			elif key == 77:
+				key_stroke = b'd'
+			else:
+				pass
 
+		try:
+			key_stroke = (str(key_stroke, 'utf-8'))
+			# print(key_stroke)
+			self.move_player(key_stroke)
+		except UnicodeDecodeError:
+			pass
 
 	# except:
 	# 	pass
 
 	def run(self):
-		run = True 
+		run = True
 
 		self.hidden_grid = self.gen_grid()
 		self.set_mines(self.hidden_grid)
+
+		# # Verify path, if it fails, keep generating grids till verified
+		# verified = 0
+		# while self.verify_path() == 1:
+		# 	# print(self.toVisit)
+		# 	verified+=1
+		# 	print(verified)
+		# 	time.sleep(0.5)
+		# 	self.hidden_grid = []
+		# 	self.hidden_grid = self.gen_grid()
+		# 	self.set_mines(self.hidden_grid)
+		# 	self.print_grid(self.hidden_grid)
+
+
 		self.print_grid(self.hidden_grid)
 		self.player_grid = self.gen_grid()
 		time.sleep(self.displayInterval)
 
+		# Re-arrange later to make interval more reliable
 		self.posX = 0
 		self.posY = 0
 		self.player_grid[self.posX][self.posY] = self.playerChar
 		self.print_grid(self.player_grid)
 
-		self.verify_path()
+
 
 		while self.game_state() == "running":
 			if msvcrt.kbhit():
@@ -248,7 +258,8 @@ class Game(object):
 					# self.print_grid(self.player_grid)
 					self.print_grid(self.player_grid)
 					print("You stepped on a mine and set off all the others...")
-					# break
+					print()
+					break
 
 				self.update_grid(self.player_grid)
 				
@@ -270,8 +281,8 @@ class Game(object):
 		from https://www.codespeedy.com/how-to-detect-which-key-is-pressed-in-python/
 		        """
 
-# myGame = Game()
-# myGame.run()
+myGame = Game()
+myGame.run()
 
 
 """ SNIPPET using numpy """
