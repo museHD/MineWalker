@@ -63,12 +63,19 @@ class Game(object):
 
 
 	def dfs(self, x = 0, y = 0):
-		x += 1
-		y += 1
-		if x == self.length:
+
+		nextX = x+1
+		nextY = y+1
+
+
+		if nextX == self.length+1:
 			x-=1
-		if y == self.length:
+			nextX -=2
+		if nextY == self.length+1:
+			nextY -=2
 			y-=1
+
+
 		
 		
 
@@ -124,6 +131,11 @@ class Game(object):
 		state = "running"
 		if self.hidden_grid[self.posX][self.posY] == self.mineChar:
 			state = "lose"
+			for mines in self.minePos:
+				x,y = mines
+				self.player_grid[x][y]=self.mineChar
+			self.print_grid(self.player_grid)
+			print("You stepped on a mine and set off all the others...")
 			return state
 		if self.posX == self.length-1 and self.posY == self.length-1:
 			state = "win"
@@ -190,11 +202,11 @@ class Game(object):
 			if msvcrt.kbhit():
 				self.capture_input()
 				self.print_grid(self.player_grid)
-				if self.game_state() == "lose":
-					self.print_grid(self.hidden_grid)
-					print("You stepped on a mine and set off all the others...")
+				self.game_state()
+				# if self.game_state() == "lose":
+				# 	# self.print_grid(self.hidden_grid)
 
-				elif self.game_state() == "win":
+				if self.game_state() == "win":
 					print("you win!")
 
 
