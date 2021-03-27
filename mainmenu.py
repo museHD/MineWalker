@@ -160,6 +160,8 @@ class UI(object):
 
 
 menu = UI()
+menu.print_list(menu.menulist)
+
 while True:
 	if msvcrt.kbhit():
 		menu.update()
