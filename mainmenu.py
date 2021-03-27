@@ -11,6 +11,8 @@ import os, sys, inspect
 import time
 import pickle
 import minewalker
+import cursor
+cursor.hide()
 
 # Simple class that stores ANSI Escape characters for specific colours
 class color:
@@ -33,6 +35,7 @@ class UI(object):
 	# Functions for each of the menu items
 	def cls(self, type = 0):
 		os.system("cls")
+
 
 	def play(self):
 		self.cls()
@@ -106,14 +109,6 @@ class UI(object):
 
 		self.currentSelection = currentSelection
 		self.print_list(menulist)
-
-		# print(currentSelection)
-
-
-
-		#test
-
-
 
 	def handle_input(self):
 		# print("handled input")

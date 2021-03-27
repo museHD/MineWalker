@@ -29,7 +29,15 @@ class Game(object):
 	def print_grid(self, grid):
 		# time.sleep(0.5)
 		os.system("cls")
-		# for i in range(9):
+		print("top")
+
+		df = pd.DataFrame(grid)
+		# print(df)
+		print(df.to_string(index=False, header=False).replace(self.playerChar, color.GREEN + self.playerChar + color.BASE))
+
+	def update_grid(self, grid):
+
+		print('\033[{0}A'.format(self.length+9))
 			
 		df = pd.DataFrame(grid)
 		# print(df)
@@ -60,6 +68,8 @@ class Game(object):
 		while len(self.minePos) != nMines:
 			mineX = random.randint(0,gridMax)
 			mineY = random.randint(0,gridMax)
+
+			# Ensure mines are not placed at the start or end positions
 			while (mineX == 0 and mineY == 0) or (mineX == gridMax and mineY == gridMax):
 				mineX = random.randint(0,gridMax)
 				mineY = random.randint(0,gridMax)				
@@ -68,10 +78,15 @@ class Game(object):
 
 
 	def dfs(self, x = 0, y = 0):
+		toVisit = self.toVisit
+		self.hiddencopy = self.hidden_grid
+		if x == -1:
+			x += 1
+		if y == -1:
+			y +=1
 
 		nextX = x+1
 		nextY = y+1
-
 
 		if nextX == self.length+1:
 			x-=1
@@ -80,11 +95,31 @@ class Game(object):
 			nextY -=2
 			y-=1
 
+		right = (x,nextY)
+		down = (nextX,y)
+		up = (x-1,y)
+		left = (x, y-1)
 
-		
-		
+		options = (right, down, up, left)
 
-	# Currently does not work -- TODO: Implement DFS search 
+		for option in options:
+			# print(option)
+			if option in toVisit:
+				x,y = option
+				toVisit.remove(option)
+				self.hiddencopy[x][y] = self.pathChar
+				self.update_grid(self.hiddencopy)
+				time.sleep(0.1)
+				if x == self.length-1 and y == self.length-1:
+					print("FOUnd")
+					# time.sleep(5)
+					return 0
+				else:
+					if self.dfs(x,y) == 0:
+						return 0
+		return 1
+
+	# Calls above DFS to find path
 	def verify_path(self):
 		hidden = self.hidden_grid
 		spotPath = []
@@ -96,15 +131,17 @@ class Game(object):
 		self.toVisit = []
 		for x in range(self.length):
 			for y in range(self.length):
-				toVisit.append((x,y))
+				self.toVisit.append((x,y))
 
-		print(toVisit)
+		# print(self.toVisit)
 		for eachMine in self.minePos:
-			if eachMine in toVisit:
+			if eachMine in self.toVisit:
 				# print(eachMine)
-				toVisit.remove(eachMine)
-
-
+				self.toVisit.remove(eachMine)
+		if self.dfs() == 0:
+			print("YES")
+		else:
+			print("NO")
 		# print("\n\n")
 		# print(toVisit)
 		# time.sleep(2)
@@ -136,11 +173,6 @@ class Game(object):
 		state = "running"
 		if self.hidden_grid[self.posX][self.posY] == self.mineChar:
 			state = "lose"
-			for mines in self.minePos:
-				x,y = mines
-				self.player_grid[x][y]=self.mineChar
-			# self.print_grid(self.player_grid)
-			print("You stepped on a mine and set off all the others...")
 			return state
 		if self.posX == self.length-1 and self.posY == self.length-1:
 			state = "win"
@@ -202,13 +234,23 @@ class Game(object):
 		self.player_grid[self.posX][self.posY] = self.playerChar
 		self.print_grid(self.player_grid)
 
-		# self.verify_path()
+		self.verify_path()
 
 		while self.game_state() == "running":
 			if msvcrt.kbhit():
+
 				self.capture_input()
-				self.game_state()
-				self.print_grid(self.player_grid)
+
+				if self.game_state() == "lose":
+					for mines in self.minePos:
+						x,y = mines
+						self.player_grid[x][y]=self.mineChar
+					# self.print_grid(self.player_grid)
+					self.print_grid(self.player_grid)
+					print("You stepped on a mine and set off all the others...")
+					# break
+
+				self.update_grid(self.player_grid)
 				
 				# if self.game_state() == "lose":
 				# 	# self.print_grid(self.hidden_grid)
