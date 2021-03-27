@@ -55,11 +55,16 @@ class Game(object):
 	# Randomly set mines to the 
 	def set_mines(self,grid):
 		nMines = self.nMines
-		for mines in range(nMines):
-			mineX = random.randint(0,self.length-1)
-			mineY = random.randint(0,self.length-1)
+		gridMax = self.length-1
+		self.minePos = set(self.minePos)
+		while len(self.minePos) != nMines:
+			mineX = random.randint(0,gridMax)
+			mineY = random.randint(0,gridMax)
+			while (mineX == 0 and mineY == 0) or (mineX == gridMax and mineY == gridMax):
+				mineX = random.randint(0,gridMax)
+				mineY = random.randint(0,gridMax)				
 			grid[mineX][mineY] = self.mineChar
-			self.minePos.append((mineX,mineY))
+			self.minePos.add((mineX,mineY))
 
 
 	def dfs(self, x = 0, y = 0):
@@ -134,11 +139,12 @@ class Game(object):
 			for mines in self.minePos:
 				x,y = mines
 				self.player_grid[x][y]=self.mineChar
-			self.print_grid(self.player_grid)
+			# self.print_grid(self.player_grid)
 			print("You stepped on a mine and set off all the others...")
 			return state
 		if self.posX == self.length-1 and self.posY == self.length-1:
 			state = "win"
+			print("You Win!")
 			return state
 		return state
 
@@ -201,13 +207,14 @@ class Game(object):
 		while self.game_state() == "running":
 			if msvcrt.kbhit():
 				self.capture_input()
-				self.print_grid(self.player_grid)
 				self.game_state()
+				self.print_grid(self.player_grid)
+				
 				# if self.game_state() == "lose":
 				# 	# self.print_grid(self.hidden_grid)
 
-				if self.game_state() == "win":
-					print("you win!")
+				# if self.game_state() == "win":
+				# 	print("you win!")
 
 
 
