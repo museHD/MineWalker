@@ -33,7 +33,7 @@ class Game(object):
 			
 		df = pd.DataFrame(grid)
 		# print(df)
-		print(df.to_string(index=False, header=False).replace('o', color.GREEN + 'o' + color.BASE))
+		print(df.to_string(index=False, header=False).replace(self.playerChar, color.GREEN + self.playerChar + color.BASE))
 
 	# Generates a simple 2d array
 	def gen_grid(self):
@@ -62,6 +62,9 @@ class Game(object):
 			self.minePos.append((mineX,mineY))
 
 
+	def dfs(self, locations):
+		if 
+
 	# Currently does not work -- TODO: Implement DFS search 
 	def verify_path(self):
 		hidden = self.hidden_grid
@@ -79,11 +82,13 @@ class Game(object):
 		print(toVisit)
 		for eachMine in self.minePos:
 			if eachMine in toVisit:
-				print(eachMine)
+				# print(eachMine)
 				toVisit.remove(eachMine)
-		print("\n\n")
-		print(toVisit)
-		time.sleep(2)
+
+
+		# print("\n\n")
+		# print(toVisit)
+		# time.sleep(2)
 
 		'''
 		while noPath == True:
@@ -169,7 +174,7 @@ class Game(object):
 
 		self.posX = 0
 		self.posY = 0
-		self.player_grid[self.posX][self.posY] = "o"
+		self.player_grid[self.posX][self.posY] = self.playerChar
 		self.print_grid(self.player_grid)
 
 		# self.verify_path()
