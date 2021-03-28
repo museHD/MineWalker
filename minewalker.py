@@ -245,6 +245,7 @@ class Game(object):
 				self.player_grid[right][up] = self.scanChar
 			else:
 				self.player_grid[right][up] = self.pathChar
+			self.player_grid[self.posX][self.posY] = self.playerChar
 
 	def capture_input(self): 
 		key_stroke = msvcrt.getch()
