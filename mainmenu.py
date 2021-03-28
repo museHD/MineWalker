@@ -50,7 +50,7 @@ class UI(object):
 		self.cls()
 		self.mygame.run()
 		option_list = ["Yes", "No"]
-		print()
+		print("\n")
 		self.print_list(option_list,cls=False)
 		if self.move_list(option_list,cls=False) == 0:
 			if self.currentSelection == 0:
@@ -170,9 +170,9 @@ class UI(object):
 
 
 	def credits(self):
-		credts = """CREDITS: \nAdrien Plisson: Inspiration for restrict function
-		\nPraveen Gollakota: Inspiration for Dispatcher method
-		\n\nCopyright Muse_HD 2021"""
+		credits = """CREDITS:\n
+		\nAdrien Plisson: Inspiration for restrict function\nPraveen Gollakota: Inspiration for Dispatcher method\nRealPython: Basic Python usage and Syntax\nGeeksForGeeks: Class members and Terminal size usage\n\n[ Press ANY KEY to Return to Main Menu ]
+		\n© Copyright Muse_HD 2021 """
 		print(credits)
 		self.wait()
 		return 0

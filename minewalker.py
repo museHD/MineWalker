@@ -163,6 +163,7 @@ class Game(object):
 		if self.posX == self.length-1 and self.posY == self.length-1:
 			state = "win"
 			print("You Win!")
+			print("Would you like to Play Again?")
 			return state
 		return state
 
