@@ -12,6 +12,7 @@ import time
 import pickle
 import minewalker
 import cursor
+import pickle
 cursor.hide()
 
 # Simple class that stores ANSI Escape characters for specific colours
@@ -46,7 +47,24 @@ class UI(object):
 			if msvcrt.kbhit():
 				msvcrt.getch()
 				return 0
+
+	def save_to_disk(self,characterList):
+		with open('settings.dat','wb') as save:
+			pickle.dump(characterList, save)
+
+	def load_settings(self):
+		try:
+			with open('settings.dat','rb') as save:
+				characterList = pickle.load(save)
+				self.mygame.playerChar = characterList[0]
+				self.mygame.mineChar = characterList[1]
+				self.mygame.pathChar = characterList[2]
+				self.mygame.boxChar	= characterList[3]			
+		except:
+			pass
+
 	def play(self):
+		self.load_settings()
 		self.cls()
 		word = "Difficulty:"
 		width= os.get_terminal_size().columns
@@ -177,6 +195,7 @@ class UI(object):
 			self.mygame.boxChar	= characterList[3]
 			return characterList
 
+
 		while runSettings:
 			select = False
 
@@ -208,6 +227,7 @@ class UI(object):
 					self.mygame.mineChar = characterList[1]
 					self.mygame.pathChar = characterList[2]
 					self.mygame.boxChar	= characterList[3]
+					self.save_to_disk(characterList)
 					print("\n Changes Saved!")
 					time.sleep(1)
 				else:
