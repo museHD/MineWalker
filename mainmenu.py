@@ -35,15 +35,20 @@ class UI(object):
 		self.menulist = ["Play","Instructions","Leaderboard","Settings","Credits","Exit"]
 		self.functionlist = ["Play","Instructions","Leaderboard","Settings","Credits","Exit"]
 		self.currentSelection = 0
+		self.mygame = minewalker.Game()
 
 	# Functions for each of the menu items
 	def cls(self, type = 0):
 		os.system("cls")
 
+	def wait(self):
+		while True:
+			if msvcrt.kbhit():
+				msvcrt.getch()
+				return 0
 	def play(self):
 		self.cls()
-		mygame = minewalker.Game()
-		mygame.run()
+		self.mygame.run()
 		print("Would you like to play again?")
 		option_list = ["Yes", "No"]
 		self.move_list(option_list,cls=False)
@@ -61,21 +66,83 @@ class UI(object):
 		\nE --> Throw a blanket to any location and detonate any mines to make those squares safe for future travel""".format(color.UNDERLINE, color.BASE, color.UNDERLINE, color.BASE, color.UNDERLINE, color.BASE)
 		print(instructions)
 		print("\n\n[ Press ANY KEY to Return to Main Menu ]")
-		while True:
-			if msvcrt.kbhit():
-				msvcrt.getch()
-				return 0
+		self.wait()
+		return 0
 
 
 		
 
 	def leaderboard(self):
 		print("kea")
+		self.wait()
+		return 0
 
 	def settings(self):
 		self.currentSelection = 0
-		menulist = ["Choose your player character: ", "Choose your mine character: ", "Choose your path character: ", "Choose your box character: "]
-		self.handle_input(menulist)
+
+		playerChar = self.mygame.playerChar
+		mineChar = self.mygame.mineChar
+		pathChar = self.mygame.pathChar
+		boxChar = self.mygame.boxChar	
+
+		menulist = [f"Choose your player character: {playerChar}", f"Choose your mine character: {mineChar}", f"Choose your path character: {pathChar}",
+		f"Choose your box character: {boxChar}", "Save Changes", "Reset to Defaults", "Return to Main Menu"]
+		self.print_list(menulist)
+		# select = True
+		characterList = [playerChar, mineChar, pathChar, boxChar]
+		gameCharList = [self.mygame.playerChar, self.mygame.mineChar, self.mygame.pathChar, self.mygame.boxChar]
+		runSettings = True
+
+		while runSettings:
+			select = False
+
+			if self.move_list(menulist) == 0:
+
+				self.print_list(menulist)
+				selIndex = self.currentSelection
+
+				# Return
+				if selIndex == len(menulist)-1:
+					runSettings = False
+					return 0
+
+				# Reset to Default
+				elif selIndex == len(menulist)-2:
+					print(selIndex)
+					print("rests")
+					playerChar = "O"
+					mineChar = "#"
+					pathChar = "."
+					boxChar = "_"
+					characterList = [playerChar, mineChar, pathChar, boxChar]
+					# self.mygame.playerChar = characterList[0]
+					# self.mygame.mineChar = characterList[1]
+					# self.mygame.pathChar = characterList[2]
+					# self.mygame.boxChar	= characterList[3]
+
+
+				# Save Changes
+				elif selIndex == len(menulist)-3:
+					self.mygame.playerChar = characterList[0]
+					self.mygame.mineChar = characterList[1]
+					self.mygame.pathChar = characterList[2]
+					self.mygame.boxChar	= characterList[3]
+
+				else:
+					select = True
+				while select == True:
+					if msvcrt.kbhit():
+						char = self.capture_input()[0]
+						menulist[selIndex] = menulist[selIndex][:-1] + str(char)
+						print(selIndex)
+						characterList[selIndex] = char
+						select = False
+
+				for i in range(4):
+					menulist[i] = menulist[i][:-1] + characterList[i]
+
+				self.print_list(menulist)
+
 
 
 	def credits(self):
@@ -218,8 +285,6 @@ while True:
 	if msvcrt.kbhit():
 		menu.main_menu()
 	
-
-
 
 
 '''
