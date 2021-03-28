@@ -93,6 +93,21 @@ class UI(object):
 		gameCharList = [self.mygame.playerChar, self.mygame.mineChar, self.mygame.pathChar, self.mygame.boxChar]
 		runSettings = True
 
+		def reset(characterList):
+			# print(selIndex)
+			# print("rests")
+			playerChar = "O"
+			mineChar = "#"
+			pathChar = "."
+			boxChar = "_"
+			characterList = [playerChar, mineChar, pathChar, boxChar]
+			# print(characterList)
+			self.mygame.playerChar = characterList[0]
+			self.mygame.mineChar = characterList[1]
+			self.mygame.pathChar = characterList[2]
+			self.mygame.boxChar	= characterList[3]
+			return characterList
+
 		while runSettings:
 			select = False
 
@@ -108,25 +123,21 @@ class UI(object):
 
 				# Reset to Default
 				elif selIndex == len(menulist)-2:
-					print(selIndex)
-					print("rests")
-					playerChar = "O"
-					mineChar = "#"
-					pathChar = "."
-					boxChar = "_"
-					characterList = [playerChar, mineChar, pathChar, boxChar]
-					# self.mygame.playerChar = characterList[0]
-					# self.mygame.mineChar = characterList[1]
-					# self.mygame.pathChar = characterList[2]
-					# self.mygame.boxChar	= characterList[3]
-
+					characterList = reset(characterList)
 
 				# Save Changes
 				elif selIndex == len(menulist)-3:
-					self.mygame.playerChar = characterList[0]
-					self.mygame.mineChar = characterList[1]
-					self.mygame.pathChar = characterList[2]
-					self.mygame.boxChar	= characterList[3]
+
+					for eachChar in characterList:
+						if characterList.count(eachChar)>1:
+							print("\nPlease Enter separate, valid characters!")
+							time.sleep(1.3)
+							characterList = reset(characterList)
+						else:
+							self.mygame.playerChar = characterList[0]
+							self.mygame.mineChar = characterList[1]
+							self.mygame.pathChar = characterList[2]
+							self.mygame.boxChar	= characterList[3]
 
 				else:
 					select = True
@@ -139,6 +150,10 @@ class UI(object):
 						select = False
 
 				for i in range(4):
+					# print('yes')
+					# time.sleep(0.2)
+					# print(menulist)
+					# print(characterList)
 					menulist[i] = menulist[i][:-1] + characterList[i]
 
 				self.print_list(menulist)
