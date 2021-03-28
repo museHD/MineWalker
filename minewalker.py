@@ -1,11 +1,12 @@
-import itertools
+# import itertools
 import pandas as pd
-import numpy as np
+# import numpy as np
 from random import randint
 import msvcrt
 import time
 import os, sys
 import random
+import copy
 
 class color:
    GREEN = '\033[92m'
@@ -20,16 +21,26 @@ class Game(object):
 		self.pathChar = "."
 		self.mineChar = "#"
 		self.nMines = 15
-		self.displayInterval = 0.6
+		self.displayInterval = 2
 		self.path = []
 		self.minePos = []
+		self.scanChar = "*"
+		self.powerups = 0
+		self.score = 0
 
+
+	def restrict(self, n, low, high):
+		if n < low:
+			n += (low - n)
+		if n > high:
+			n -= (n - high)
+		return n
 	# Takes a 2D array, converts it to a pandas df and prints it to display
 	# TODO: Find out if the entire grid can be reprinted in console
 	def print_grid(self, grid):
 		# time.sleep(0.5)
 		os.system("cls")
-		print("top")
+		print()
 
 		df = pd.DataFrame(grid)
 		# print(df)
@@ -49,9 +60,6 @@ class Game(object):
 		grid = []
 		thisRow = []
 
-		# Box character 
-		self.boxChar = "_"
-
 		# Populates a 2D array with box characters
 		for yCols in range(self.length):
 			for xRows in range(self.length):
@@ -62,6 +70,7 @@ class Game(object):
 
 	# Randomly set mines to the 
 	def set_mines(self,grid):
+		self.minePos = []
 		nMines = self.nMines
 		gridMax = self.length-1
 		self.minePos = set(self.minePos)
@@ -79,7 +88,9 @@ class Game(object):
 
 	def dfs(self, x = 0, y = 0):
 		toVisit = self.toVisit
+		self.hiddencopy = copy.copy(self.hidden_grid)
 		self.hiddencopy = self.hidden_grid
+
 		if x == -1:
 			x += 1
 		if y == -1:
@@ -100,6 +111,7 @@ class Game(object):
 		up = (x-1,y)
 		left = (x, y-1)
 
+		# tuple vs list optimisation
 		options = (right, down, up, left)
 
 		for option in options:
@@ -107,11 +119,11 @@ class Game(object):
 			if option in toVisit:
 				x,y = option
 				toVisit.remove(option)
-				self.hiddencopy[x][y] = self.pathChar
-				self.update_grid(self.hiddencopy)
-				time.sleep(0.1)
+				# self.hiddencopy[x][y] = self.pathChar
+				# self.update_grid(self.hiddencopy)
+				# time.sleep(0.1)
 				if x == self.length-1 and y == self.length-1:
-					print("FOUnd")
+					# print("FOUnd")
 					# time.sleep(5)
 					return 0
 				else:
@@ -121,6 +133,7 @@ class Game(object):
 
 	# Calls above DFS to find path
 	def verify_path(self):
+		# hidden = copy.copy(self.hidden_grid)
 		hidden = self.hidden_grid
 		spotPath = []
 		x = 0
@@ -139,49 +152,50 @@ class Game(object):
 				# print(eachMine)
 				self.toVisit.remove(eachMine)
 		if self.dfs() == 0:
-			print("YES")
+			# print("YES")
+			return True
 		else:
-			print("NO")
-		# print("\n\n")
-		# print(toVisit)
-		# time.sleep(2)
-
-		'''
-		while noPath == True:
-			if hidden[x+1][y] == self.mineChar:
-
-				if hidden[x][y+1] == self.mineChar:
-
-					print("DED")
-					break
-				y = y+1
-			else:
-				x = x+1
-			point = (x,y)
-			if x == self.length and y == self.length:
-				noPath = False
-				print(myPath)
-				print("LES GO")
-				break
-			myPath.append(point)
-
-		'''
+			# print('no')
+			return False
 
 
+	def calculate_score(self):
+		timeTaken = int(time.time() - self.startTime)
+		score = 1000
+		score = score * self.nMines^2
+		score += self.length*3
+		score -= timeTaken*1000
+		score += self.powerups *150
+		self.restrict(score,0,1000000000)
+		self.score = score
+		return score
 
 	def game_state(self):
 		state = "running"
 		if self.hidden_grid[self.posX][self.posY] == self.mineChar:
 			state = "lose"
-			return state
+
+			for mines in self.minePos:
+				x,y = mines
+				self.player_grid[x][y]=self.mineChar
+			self.update_grid(self.player_grid)
+			print("You stepped on a mine and set off all the others...")
+			print()
+
 		if self.posX == self.length-1 and self.posY == self.length-1:
 			state = "win"
 			print("You Win!")
-			return state
+			print()
+
+		if state != "running":
+			print(f"Your Score Was: {self.calculate_score()}")			
+			print("Would you like to Play Again?")
 		return state
 
 
 	def move_player(self, direction):
+
+		### BUG where path is drawn onto player at the edge
 
 
 		# Implement Movelist input structure later
@@ -189,7 +203,7 @@ class Game(object):
 		# IMPLEMENTING MOVELIST
 		direction = direction.lower()
 		moveList = {"d":(0,1), "a":(0,-1), "w":(-1,0), "s":(1,0)}
-
+		poslist = [(0,1),(0,-1),(-1,0),(1,0)]
 		if direction in moveList:
 			self.player_grid[self.posX][self.posY] = self.pathChar
 			# self.myPath.append((self.posX, self.posY))
@@ -197,66 +211,120 @@ class Game(object):
 			self.posX += addX
 			self.posY += addY
 
-			if self.posY == self.length:
-				self.posY -= 1
-			elif self.posY == -1:
-				self.posY += 1
-			if self.posX == self.length:
-				self.posX -= 1
-			elif self.posX == -1:
-				self.posX += 1
+			self.posX = self.restrict(self.posX,0,self.length-1)
+			self.posY = self.restrict(self.posY,0,self.length-1)
 
 			self.player_grid[self.posX][self.posY] = self.playerChar
 			# self.player_grid[]
 
+		
+		elif direction == "q":
+			for scanPoint in poslist:
+				addX, addY = scanPoint
+				addX += self.posX
+				addY += self.posY
+				addX = self.restrict(addX,0,self.length-1)
+				addY = self.restrict(addY,0,self.length-1)
+
+				if (addX,addY) in self.minePos:
+					self.player_grid[addX][addY] = self.scanChar
+				else:
+					self.player_grid[addX][addY] = self.pathChar
+
+			up = self.restrict(self.posY-1,0,self.length-1)
+			down = self.restrict(self.posY+1,0,self.length-1)
+			left = self.restrict(self.posX-1,0,self.length-1)
+			right = self.restrict(self.posX+1,0,self.length-1)
+
+			# print(up,down,left,right)
+			if self.hidden_grid[right][down] == self.mineChar:
+				self.player_grid[right][down] = self.scanChar
+			else:
+				self.player_grid[right][down] = self.pathChar
+
+			if self.hidden_grid[left][up] == self.mineChar:
+				self.player_grid[left][up] = self.scanChar
+			else:
+				self.player_grid[left][up] = self.pathChar
+
+			if self.hidden_grid[left][down] == self.mineChar:
+				self.player_grid[left][down] = self.scanChar
+			else:
+				self.player_grid[left][down] = self.pathChar
+
+			if self.hidden_grid[right][up] == self.mineChar:
+				self.player_grid[right][up] = self.scanChar
+			else:
+				self.player_grid[right][up] = self.pathChar
+			self.player_grid[self.posX][self.posY] = self.playerChar
+
 	def capture_input(self): 
 		key_stroke = msvcrt.getch()
-	# try:
-		key_stroke = (str(key_stroke, 'utf-8'))
-		# print(key_stroke)
-		self.move_player(key_stroke)
+		if ord(key_stroke) == 224:
+			key = ord(msvcrt.getch())
+			if key == 80:
+				key_stroke = b's'
+			elif key == 72:
+				key_stroke = b'w'
+			elif key == 75:
+				key_stroke = b'a'
+			elif key == 77:
+				key_stroke = b'd'
+			else:
+				pass
 
+		try:
+			key_stroke = (str(key_stroke, 'utf-8'))
+			# print(key_stroke)
+			self.move_player(key_stroke)
+		except UnicodeDecodeError:
+			pass
 
 	# except:
 	# 	pass
 
 	def run(self):
-		run = True 
+
+		self.startTime = time.time()
+
+		self.path = []
+		self.minePos = []
+		run = True
 
 		self.hidden_grid = self.gen_grid()
 		self.set_mines(self.hidden_grid)
+
+		# Verify path, if it fails, keep generating grids till verified
+		verified = False
+		while verified == False:
+			if self.verify_path() == False:
+				# print(self.toVisit)
+				# verified+=1
+				# print(verified)
+				self.hidden_grid = self.gen_grid()
+				self.set_mines(self.hidden_grid)
+				# self.print_grid(self.hidden_grid)
+			else:
+				verified = True
+
+
 		self.print_grid(self.hidden_grid)
 		self.player_grid = self.gen_grid()
 		time.sleep(self.displayInterval)
 
+		# Re-arrange later to make interval more reliable
 		self.posX = 0
 		self.posY = 0
 		self.player_grid[self.posX][self.posY] = self.playerChar
 		self.print_grid(self.player_grid)
 
-		self.verify_path()
+
 
 		while self.game_state() == "running":
 			if msvcrt.kbhit():
-
 				self.capture_input()
-
-				if self.game_state() == "lose":
-					for mines in self.minePos:
-						x,y = mines
-						self.player_grid[x][y]=self.mineChar
-					# self.print_grid(self.player_grid)
-					self.print_grid(self.player_grid)
-					print("You stepped on a mine and set off all the others...")
-					# break
-
 				self.update_grid(self.player_grid)
-				
-				# if self.game_state() == "lose":
-				# 	# self.print_grid(self.hidden_grid)
-
-				# if self.game_state() == "win":
-				# 	print("you win!")
+		
 
 
 
