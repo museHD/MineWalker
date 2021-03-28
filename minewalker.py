@@ -26,6 +26,7 @@ class Game(object):
 		self.minePos = []
 		self.scanChar = "*"
 		self.powerups = 0
+		self.score = 0
 
 
 	def restrict(self, n, low, high):
@@ -166,6 +167,7 @@ class Game(object):
 		score -= timeTaken*1000
 		score += self.powerups *150
 		self.restrict(score,0,1000000000)
+		self.score = score
 		return score
 
 	def game_state(self):
@@ -234,8 +236,7 @@ class Game(object):
 			left = self.restrict(self.posX-1,0,self.length-1)
 			right = self.restrict(self.posX+1,0,self.length-1)
 
-			# PLS FIX
-			print(up,down,left,right)
+			# print(up,down,left,right)
 			if self.hidden_grid[right][down] == self.mineChar:
 				self.player_grid[right][down] = self.scanChar
 			else:

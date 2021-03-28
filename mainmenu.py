@@ -37,6 +37,37 @@ class UI(object):
 		self.functionlist = ["Play","Instructions","Leaderboard","Settings","Credits","Exit"]
 		self.currentSelection = 0
 		self.mygame = minewalker.Game()
+		self.highscores = {0:"",1:"",2:"",3:"",4:"",5:""}
+		self.highscoreNames = [] 
+		self.highscoreList = []		
+		self.load_leaderboard()
+		self.reorganise_hs()
+
+	def load_leaderboard(self):
+		try:
+			with open("highscores.dat","rb") as save:
+				# Highscore dictionary
+				self.highscores = pickle.load(save)
+		except:
+			pass
+	
+	def reorganise_hs(self):
+		for score, name in sorted(self.highscores.items()):
+			self.highscoreNames.append(name)
+			self.highscoreList.append(score)
+		self.highscoreList.reverse()
+		self.highscoreNames.reverse()
+
+	def check_highscore(self, score):
+		print(self.highscoreList)
+		if score > self.highscoreList[4]:
+			return True
+		else:
+			return False
+
+	def save_highscore(self):
+		with open("highscores.dat","wb") as sav:
+			pickle.dump(self.highscores,sav)
 
 	# Functions for each of the menu items
 	def cls(self, type = 0):
@@ -131,6 +162,13 @@ class UI(object):
 				pass
 
 		self.mygame.run()
+		score = self.mygame.score
+		if self.check_highscore(score) == True:
+			print("You got a High Score!")
+			name = str(input("Enter your Name: "))
+			self.highscores[score] = name
+			self.reorganise_hs()
+
 		option_list = ["Yes", "No"]
 		print("\n")
 		self.currentSelection = 0
@@ -160,7 +198,12 @@ class UI(object):
 		return 0
 
 	def leaderboard(self):
-		print("kea")
+		self.reorganise_hs()
+		self.highscoreNames=self.highscoreNames[:4]
+		self.highscoreList=self.highscoreList[:4]
+		for iterator in range(len(self.highscoreNames)):
+			print(str(self.highscoreNames[iterator]) + ": " + str(self.highscoreList[iterator]))
+		print("\n\n[ Press ANY KEY to Return to Main Menu ]")
 		self.wait()
 		return 0
 
@@ -260,6 +303,7 @@ class UI(object):
 		return 0
 
 	def exit(self):
+		self.save_highscore()
 		sys.exit("Thank you for playing my game!")
 		
 
