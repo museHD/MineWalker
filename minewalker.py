@@ -20,7 +20,7 @@ class Game(object):
 		self.playerChar = "O"
 		self.pathChar = "."
 		self.mineChar = "#"
-		self.nMines = 15
+		self.nMines = 50
 		self.displayInterval = 0.8
 		self.path = []
 		self.minePos = []
@@ -68,6 +68,7 @@ class Game(object):
 
 	# Randomly set mines to the 
 	def set_mines(self,grid):
+		self.minePos = []
 		nMines = self.nMines
 		gridMax = self.length-1
 		self.minePos = set(self.minePos)
@@ -116,7 +117,7 @@ class Game(object):
 			if option in toVisit:
 				x,y = option
 				toVisit.remove(option)
-				self.hiddencopy[x][y] = self.pathChar
+				# self.hiddencopy[x][y] = self.pathChar
 				# self.update_grid(self.hiddencopy)
 				# time.sleep(0.1)
 				if x == self.length-1 and y == self.length-1:
@@ -152,7 +153,7 @@ class Game(object):
 			# print("YES")
 			return True
 		else:
-			print('no')
+			# print('no')
 			return False
 
 	def game_state(self):
@@ -281,17 +282,18 @@ class Game(object):
 		self.hidden_grid = self.gen_grid()
 		self.set_mines(self.hidden_grid)
 
-		# # Verify path, if it fails, keep generating grids till verified
-		# verified = False
-		# while self.verify_path() == False:
-		# 	# print(self.toVisit)
-		# 	# verified+=1
-		# 	print(verified)
-		# 	time.sleep(0.5)
-		# 	self.hidden_grid = []
-		# 	self.hidden_grid = self.gen_grid()
-		# 	self.set_mines(self.hidden_grid)
-		# 	self.print_grid(self.hidden_grid)
+		# Verify path, if it fails, keep generating grids till verified
+		verified = False
+		while verified == False:
+			if self.verify_path() == False:
+				# print(self.toVisit)
+				# verified+=1
+				# print(verified)
+				self.hidden_grid = self.gen_grid()
+				self.set_mines(self.hidden_grid)
+				# self.print_grid(self.hidden_grid)
+			else:
+				verified = True
 
 
 		self.print_grid(self.hidden_grid)
@@ -342,8 +344,8 @@ class Game(object):
 		from https://www.codespeedy.com/how-to-detect-which-key-is-pressed-in-python/
 		        """
 
-# myGame = Game()
-# myGame.run()
+myGame = Game()
+myGame.run()
 
 
 """ SNIPPET using numpy """
