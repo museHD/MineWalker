@@ -170,11 +170,16 @@ class UI(object):
 
 
 	def credits(self):
-		pass
+		credts = """CREDITS: \nAdrien Plisson: Inspiration for restrict function
+		\nPraveen Gollakota: Inspiration for Dispatcher method
+		\n\nCopyright Muse_HD 2021"""
+		print(credits)
+		self.wait()
+		return 0
 
 	def exit(self):
 		sys.exit("Thank you for playing my game!")
-		pass
+		
 
 
 	def print_list(self, menulist, cls = True):
