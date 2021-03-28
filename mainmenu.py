@@ -49,9 +49,16 @@ class UI(object):
 	def play(self):
 		self.cls()
 		self.mygame.run()
-		print("Would you like to play again?")
 		option_list = ["Yes", "No"]
-		self.move_list(option_list,cls=False)
+		print()
+		self.print_list(option_list,cls=False)
+		if self.move_list(option_list,cls=False) == 0:
+			if self.currentSelection == 0:
+				self.play()
+				return 0 
+			else:
+				self.cls()
+				return 0
 		
 
 	def instructions(self):
@@ -133,12 +140,14 @@ class UI(object):
 							print("\nPlease Enter separate, valid characters!")
 							time.sleep(1.3)
 							characterList = reset(characterList)
-						else:
-							self.mygame.playerChar = characterList[0]
-							self.mygame.mineChar = characterList[1]
-							self.mygame.pathChar = characterList[2]
-							self.mygame.boxChar	= characterList[3]
-
+							break
+					
+					self.mygame.playerChar = characterList[0]
+					self.mygame.mineChar = characterList[1]
+					self.mygame.pathChar = characterList[2]
+					self.mygame.boxChar	= characterList[3]
+					print("\n Changes Saved!")
+					time.sleep(1)
 				else:
 					select = True
 				while select == True:
@@ -167,6 +176,7 @@ class UI(object):
 		sys.exit("Thank you for playing my game!")
 		pass
 
+
 	def print_list(self, menulist, cls = True):
 		listIndex = 0
 		# clear = '\033[{0}A'.format(len(menulist)+1)
@@ -177,6 +187,9 @@ class UI(object):
 		# toBePrinted = []
 		if cls:
 			self.cls()
+		else:
+			print()
+			print('\033[{0}A'.format(len(menulist)+2))
 		# print(clear)
 		# Add padding to center menu items
 		for listIndex, option in enumerate(menulist):
