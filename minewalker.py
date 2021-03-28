@@ -274,10 +274,6 @@ class Game(object):
 
 	def run(self):
 
-
-		self.length = 10
-		self.nMines = 15
-		self.displayInterval = 0.8
 		self.path = []
 		self.minePos = []
 		run = True
