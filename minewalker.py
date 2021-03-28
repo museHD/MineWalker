@@ -58,9 +58,6 @@ class Game(object):
 		grid = []
 		thisRow = []
 
-		# Box character 
-		self.boxChar = "_"
-
 		# Populates a 2D array with box characters
 		for yCols in range(self.length):
 			for xRows in range(self.length):
@@ -153,10 +150,10 @@ class Game(object):
 				self.toVisit.remove(eachMine)
 		if self.dfs() == 0:
 			# print("YES")
-			return 0
+			return True
 		else:
 			print('no')
-			return 1
+			return False
 
 	def game_state(self):
 		state = "running"
@@ -171,6 +168,8 @@ class Game(object):
 
 
 	def move_player(self, direction):
+
+		### BUG where path is drawn onto player at the edge
 
 
 		# Implement Movelist input structure later
@@ -272,16 +271,23 @@ class Game(object):
 	# 	pass
 
 	def run(self):
+
+
+		self.length = 10
+		self.nMines = 15
+		self.displayInterval = 0.8
+		self.path = []
+		self.minePos = []
 		run = True
 
 		self.hidden_grid = self.gen_grid()
 		self.set_mines(self.hidden_grid)
 
 		# # Verify path, if it fails, keep generating grids till verified
-		# verified = 0
-		# while self.verify_path() == 1:
+		# verified = False
+		# while self.verify_path() == False:
 		# 	# print(self.toVisit)
-		# 	verified+=1
+		# 	# verified+=1
 		# 	print(verified)
 		# 	time.sleep(0.5)
 		# 	self.hidden_grid = []
@@ -314,6 +320,7 @@ class Game(object):
 					# self.print_grid(self.player_grid)
 					self.print_grid(self.player_grid)
 					print("You stepped on a mine and set off all the others...")
+					print("Would you like to Play Again?")
 					print()
 					break
 
@@ -337,8 +344,8 @@ class Game(object):
 		from https://www.codespeedy.com/how-to-detect-which-key-is-pressed-in-python/
 		        """
 
-myGame = Game()
-myGame.run()
+# myGame = Game()
+# myGame.run()
 
 
 """ SNIPPET using numpy """
