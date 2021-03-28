@@ -20,11 +20,12 @@ class Game(object):
 		self.playerChar = "O"
 		self.pathChar = "."
 		self.mineChar = "#"
-		self.nMines = 50
-		self.displayInterval = 0.8
+		self.nMines = 15
+		self.displayInterval = 2
 		self.path = []
 		self.minePos = []
 		self.scanChar = "*"
+		self.powerups = 0
 
 
 	def restrict(self, n, low, high):
@@ -156,16 +157,37 @@ class Game(object):
 			# print('no')
 			return False
 
+
+	def calculate_score(self):
+		timeTaken = int(time.time() - self.startTime)
+		score = 1000
+		score = score * self.nMines^2
+		score += self.length*3
+		score -= timeTaken*1000
+		score += self.powerups *150
+		self.restrict(score,0,1000000000)
+		return score
+
 	def game_state(self):
 		state = "running"
 		if self.hidden_grid[self.posX][self.posY] == self.mineChar:
 			state = "lose"
-			return state
+
+			for mines in self.minePos:
+				x,y = mines
+				self.player_grid[x][y]=self.mineChar
+			self.update_grid(self.player_grid)
+			print("You stepped on a mine and set off all the others...")
+			print()
+
 		if self.posX == self.length-1 and self.posY == self.length-1:
 			state = "win"
 			print("You Win!")
+			print()
+
+		if state != "running":
+			print(f"Your Score Was: {self.calculate_score()}")			
 			print("Would you like to Play Again?")
-			return state
 		return state
 
 
@@ -187,14 +209,8 @@ class Game(object):
 			self.posX += addX
 			self.posY += addY
 
-			if self.posY == self.length:
-				self.posY -= 1
-			elif self.posY == -1:
-				self.posY += 1
-			if self.posX == self.length:
-				self.posX -= 1
-			elif self.posX == -1:
-				self.posX += 1
+			self.posX = self.restrict(self.posX,0,self.length-1)
+			self.posY = self.restrict(self.posY,0,self.length-1)
 
 			self.player_grid[self.posX][self.posY] = self.playerChar
 			# self.player_grid[]
@@ -213,20 +229,13 @@ class Game(object):
 				else:
 					self.player_grid[addX][addY] = self.pathChar
 
-			up = self.posY-1
-			down = self.posY+1
-			left = self.posX-1
-			right = self.posX+1
+			up = self.restrict(self.posY-1,0,self.length-1)
+			down = self.restrict(self.posY+1,0,self.length-1)
+			left = self.restrict(self.posX-1,0,self.length-1)
+			right = self.restrict(self.posX+1,0,self.length-1)
 
-			if up < 0:
-				up+=1
-			if down == self.length:
-				down -= 1
-			if left < 0:
-				left += 1
-			if right == self.length:
-				right+=1
-
+			# PLS FIX
+			print(up,down,left,right)
 			if self.hidden_grid[right][down] == self.mineChar:
 				self.player_grid[right][down] = self.scanChar
 			else:
@@ -275,6 +284,8 @@ class Game(object):
 
 	def run(self):
 
+		self.startTime = time.time()
+
 		self.path = []
 		self.minePos = []
 		run = True
@@ -310,27 +321,9 @@ class Game(object):
 
 		while self.game_state() == "running":
 			if msvcrt.kbhit():
-
 				self.capture_input()
-
-				if self.game_state() == "lose":
-					for mines in self.minePos:
-						x,y = mines
-						self.player_grid[x][y]=self.mineChar
-					# self.print_grid(self.player_grid)
-					self.print_grid(self.player_grid)
-					print("You stepped on a mine and set off all the others...")
-					print("Would you like to Play Again?")
-					print()
-					break
-
 				self.update_grid(self.player_grid)
-				
-				# if self.game_state() == "lose":
-				# 	# self.print_grid(self.hidden_grid)
-
-				# if self.game_state() == "win":
-				# 	print("you win!")
+		
 
 
 
@@ -344,8 +337,8 @@ class Game(object):
 		from https://www.codespeedy.com/how-to-detect-which-key-is-pressed-in-python/
 		        """
 
-myGame = Game()
-myGame.run()
+# myGame = Game()
+# myGame.run()
 
 
 """ SNIPPET using numpy """

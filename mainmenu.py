@@ -48,9 +48,74 @@ class UI(object):
 				return 0
 	def play(self):
 		self.cls()
+		word = "Difficulty:"
+		width= os.get_terminal_size().columns
+		half = width/2
+		for listIndex, option in enumerate(word):
+			blankchars = half - len(word)/2
+			chars = ""
+			for x in range(int(blankchars)):
+				chars += " "
+		print(chars + color.UNDERLINE + word + color.BASE)
+
+		modes = ["Beginner", "Easy", "Normal", "Moderate", "Hard", "Extreme", "Ultra Madness","Custom"]
+		self.print_list(modes,cls=False)
+
+		if self.move_list(modes,cls=False) == 0:
+
+			self.mygame.length = 10
+			self.mygame.nMines = 15
+			self.mygame.displayInterval = 2
+			self.mygame.powerups = 100
+
+			if self.currentSelection == 0:
+				self.mygame.powerups = 100
+				self.mygame.displayInterval = 2
+				self.mygame.length = 10
+				self.mygame.nMines = 15
+
+			elif self.currentSelection == 1:
+				self.mygame.displayInterval = 1.3
+				self.mygame.powerups = 12
+				self.mygame.length = 10
+				self.mygame.nMines = 15
+
+			elif self.currentSelection == 2:
+				self.mygame.powerups = 10
+				self.mygame.displayInterval = 1
+				self.mygame.length = 10
+				self.mygame.nMines = 15
+
+			elif self.currentSelection == 3:
+				self.mygame.length = 13
+				self.mygame.powerups = 10
+				self.mygame.displayInterval = 0.8
+				self.mygame.nMines = 18
+
+			elif self.currentSelection == 4:
+				self.mygame.length = 15
+				self.mygame.powerups = 10
+				self.mygame.displayInterval = 0.8
+				self.mygame.nMines = 25
+			
+			elif self.currentSelection == 5:
+				self.mygame.length = 17
+				self.mygame.powerups = 7
+				self.mygame.displayInterval = 0.8
+				self.mygame.nMines = 35
+
+			elif self.currentSelection == 6:
+				self.mygame.length = 20
+				self.mygame.powerups = 5
+				self.mygame.displayInterval = 0.5
+				self.mygame.nMines = 75
+			else:
+				pass
+
 		self.mygame.run()
 		option_list = ["Yes", "No"]
 		print("\n")
+		self.currentSelection = 0
 		self.print_list(option_list,cls=False)
 		if self.move_list(option_list,cls=False) == 0:
 			if self.currentSelection == 0:
@@ -70,14 +135,11 @@ class UI(object):
 		\nRemember where the mines are and navigate the minefield using W A S D to get to the end column.\n
 		\n{4}Special Abilities:{5}
 		\nQ --> Scan for mines around you
-		\nE --> Throw a blanket to any location and detonate any mines to make those squares safe for future travel""".format(color.UNDERLINE, color.BASE, color.UNDERLINE, color.BASE, color.UNDERLINE, color.BASE)
+		""".format(color.UNDERLINE, color.BASE, color.UNDERLINE, color.BASE, color.UNDERLINE, color.BASE)
 		print(instructions)
 		print("\n\n[ Press ANY KEY to Return to Main Menu ]")
 		self.wait()
 		return 0
-
-
-		
 
 	def leaderboard(self):
 		print("kea")
@@ -270,13 +332,6 @@ class UI(object):
 				self.print_list(menulist,cls)
 
 
-
-	# def handle_input(self, menulist = []):
-
-	#   key_stroke = self.keylog[-1]
-
-	#   keylist = {"w":-1, "s":+1}
-
 	#   # Contains a list of all menu items with lowercase letters to match the specific functions created for them.
 	#   dispatch = ["self." + menuitem.lower() for menuitem in self.functionlist]
 
@@ -287,12 +342,6 @@ class UI(object):
 	#       self.print_list(self.menulist)
 
 	#   # If Enter or Spacebar is pressed, the currently selected function from the menu list is called using eval
-	#   if key_stroke == "\r" or key_stroke == " ":
-	#       self.cls()
-	#       eval(dispatch[self.currentSelection])()
-
-	#   elif key_stroke in keylist:
-	#       self.move_list(keylist[key_stroke],menulist) 
 
 	def main_menu(self):
 		mainlist = ["Play","Instructions","Leaderboard","Settings","Credits","Exit"]        
@@ -317,28 +366,3 @@ menu.print_list(menu.menulist)
 while True:
 	if msvcrt.kbhit():
 		menu.main_menu()
-	
-
-
-'''
-menu()
-handle input, check input
-move through menu items
-selec items
-
-settings()
-handle input, check input
-move thruogh items
-select items
-use input and change variables
-
-menulist
-
-if on minecharat == change mine 
-if on path characr: change path
-
-
-
-
-
-'''
