@@ -189,7 +189,7 @@ class Game(object):
 
 		if state != "running":
 			print(f"Your Score Was: {self.calculate_score()}")			
-			print("Would you like to Play Again?")
+			# print("Would you like to Play Again?")
 		return state
 
 

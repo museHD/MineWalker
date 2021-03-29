@@ -59,8 +59,8 @@ class UI(object):
 		self.highscoreNames.reverse()
 
 	def check_highscore(self, score):
-		print(self.highscoreList)
-		if score > self.highscoreList[4]:
+		# print(self.highscoreList)
+		if score > self.highscoreList[3]:
 			return True
 		else:
 			return False
@@ -169,6 +169,7 @@ class UI(object):
 			self.highscores[score] = name
 			self.reorganise_hs()
 
+		print("\nWould you like to Play Again?")
 		option_list = ["Yes", "No"]
 		print("\n")
 		self.currentSelection = 0
@@ -185,12 +186,12 @@ class UI(object):
 	def instructions(self):
 		# self.cls()
 		instructions = """Welcome to MineWalker!\n\n{0}Objective:{1}
-		\nReach the end column of the minefield without setting off any mines.\n
+		\nReach the last square of the minefield without setting off any mines.\n
 		\n{2}How to Play:{3}
 		\nThe position of each mine will be shown to you for a small amount of time depending on your level of difficulty.
-		\nRemember where the mines are and navigate the minefield using W A S D to get to the end column.\n
+		\nRemember where the mines are and navigate the minefield using W A S D or the ARROW KEYS to get to the cell at the intersection of the last row and column.\n
 		\n{4}Special Abilities:{5}
-		\nQ --> Scan for mines around you
+		\nQ --> Scan for mines in immediate squares around you
 		""".format(color.UNDERLINE, color.BASE, color.UNDERLINE, color.BASE, color.UNDERLINE, color.BASE)
 		print(instructions)
 		print("\n\n[ Press ANY KEY to Return to Main Menu ]")
