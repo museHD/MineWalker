@@ -48,6 +48,7 @@ class Game(object):
 
 	def update_grid(self, grid):
 
+
 		print('\033[{0}A'.format(self.length+9))
 			
 		df = pd.DataFrame(grid)
@@ -163,9 +164,9 @@ class Game(object):
 		timeTaken = int(time.time() - self.startTime)
 		score = 1000
 		score = score * self.nMines^2
-		score += self.length*3
+		score += self.length*1.5
 		score -= timeTaken*1000
-		score += self.powerups *150
+		score += self.powerups *15
 		self.restrict(score,0,1000000000)
 		self.score = score
 		return score
@@ -195,15 +196,11 @@ class Game(object):
 
 	def move_player(self, direction):
 
-		### BUG where path is drawn onto player at the edge
-
-
-		# Implement Movelist input structure later
-
 		# IMPLEMENTING MOVELIST
 		direction = direction.lower()
 		moveList = {"d":(0,1), "a":(0,-1), "w":(-1,0), "s":(1,0)}
 		poslist = [(0,1),(0,-1),(-1,0),(1,0)]
+		self.restrict(self.powerups, 0, 10000000)
 		if direction in moveList:
 			self.player_grid[self.posX][self.posY] = self.pathChar
 			# self.myPath.append((self.posX, self.posY))
@@ -217,48 +214,55 @@ class Game(object):
 			self.player_grid[self.posX][self.posY] = self.playerChar
 			# self.player_grid[]
 
-		
 		elif direction == "q":
-			for scanPoint in poslist:
-				addX, addY = scanPoint
-				addX += self.posX
-				addY += self.posY
-				addX = self.restrict(addX,0,self.length-1)
-				addY = self.restrict(addY,0,self.length-1)
+			self.powerups -= 1
+			if self.powerups > 1:
+				print(f"Remaining Scans: {self.powerups}   \n")
 
-				if (addX,addY) in self.minePos:
-					self.player_grid[addX][addY] = self.scanChar
+				for scanPoint in poslist:
+					addX, addY = scanPoint
+					addX += self.posX
+					addY += self.posY
+					addX = self.restrict(addX,0,self.length-1)
+					addY = self.restrict(addY,0,self.length-1)
+
+					if (addX,addY) in self.minePos:
+						self.player_grid[addX][addY] = self.scanChar
+					else:
+						self.player_grid[addX][addY] = self.pathChar
+
+				up = self.restrict(self.posY-1,0,self.length-1)
+				down = self.restrict(self.posY+1,0,self.length-1)
+				left = self.restrict(self.posX-1,0,self.length-1)
+				right = self.restrict(self.posX+1,0,self.length-1)
+
+				# print(up,down,left,right)
+				if self.hidden_grid[right][down] == self.mineChar:
+					self.player_grid[right][down] = self.scanChar
 				else:
-					self.player_grid[addX][addY] = self.pathChar
+					self.player_grid[right][down] = self.pathChar
 
-			up = self.restrict(self.posY-1,0,self.length-1)
-			down = self.restrict(self.posY+1,0,self.length-1)
-			left = self.restrict(self.posX-1,0,self.length-1)
-			right = self.restrict(self.posX+1,0,self.length-1)
+				if self.hidden_grid[left][up] == self.mineChar:
+					self.player_grid[left][up] = self.scanChar
+				else:
+					self.player_grid[left][up] = self.pathChar
 
-			# print(up,down,left,right)
-			if self.hidden_grid[right][down] == self.mineChar:
-				self.player_grid[right][down] = self.scanChar
+				if self.hidden_grid[left][down] == self.mineChar:
+					self.player_grid[left][down] = self.scanChar
+				else:
+					self.player_grid[left][down] = self.pathChar
+
+				if self.hidden_grid[right][up] == self.mineChar:
+					self.player_grid[right][up] = self.scanChar
+				else:
+					self.player_grid[right][up] = self.pathChar
+
 			else:
-				self.player_grid[right][down] = self.pathChar
-
-			if self.hidden_grid[left][up] == self.mineChar:
-				self.player_grid[left][up] = self.scanChar
-			else:
-				self.player_grid[left][up] = self.pathChar
-
-			if self.hidden_grid[left][down] == self.mineChar:
-				self.player_grid[left][down] = self.scanChar
-			else:
-				self.player_grid[left][down] = self.pathChar
-
-			if self.hidden_grid[right][up] == self.mineChar:
-				self.player_grid[right][up] = self.scanChar
-			else:
-				self.player_grid[right][up] = self.pathChar
-			self.player_grid[self.posX][self.posY] = self.playerChar
+				print("No Remaining Powerups!        ")
+		self.player_grid[self.posX][self.posY] = self.playerChar
 
 	def capture_input(self): 
+
 		key_stroke = msvcrt.getch()
 		if ord(key_stroke) == 224:
 			key = ord(msvcrt.getch())

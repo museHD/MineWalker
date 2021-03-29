@@ -176,6 +176,7 @@ class UI(object):
 		self.print_list(option_list,cls=False)
 		if self.move_list(option_list,cls=False) == 0:
 			if self.currentSelection == 0:
+				self.cls()
 				self.play()
 				return 0 
 			else:
@@ -315,14 +316,13 @@ class UI(object):
 		width= os.get_terminal_size().columns
 		half = width/2
 
-		# TODO: Call cls right before printing to remove flicker
-		# toBePrinted = []
+		# Clear screen vs moving cursor
 		if cls:
 			self.cls()
 		else:
 			print()
 			print('\033[{0}A'.format(len(menulist)+2))
-		# print(clear)
+
 		# Add padding to center menu items
 		for listIndex, option in enumerate(menulist):
 			blankchars = half - len(option)/2
@@ -397,19 +397,13 @@ class UI(object):
 				self.print_list(menulist,cls)
 
 
-	#   # Contains a list of all menu items with lowercase letters to match the specific functions created for them.
-	#   dispatch = ["self." + menuitem.lower() for menuitem in self.functionlist]
 
-	#   # If the handle input function is not called from update, clear the screen and default to the main menu list
-	#   if inspect.stack()[1][3] != "update":
-	#       self.currentSelection = 0
-	#       self.cls(1)
-	#       self.print_list(self.menulist)
 
 	#   # If Enter or Spacebar is pressed, the currently selected function from the menu list is called using eval
-
 	def main_menu(self):
-		mainlist = ["Play","Instructions","Leaderboard","Settings","Credits","Exit"]        
+		mainlist = ["Play","Instructions","Leaderboard","Settings","Credits","Exit"]
+
+		# Contains a list of all menu items with lowercase letters to match the specific functions created for them.
 		dispatch = ["self." + menuitem.lower() for menuitem in mainlist]
 
 		if self.move_list(mainlist) == 0:
@@ -421,7 +415,6 @@ class UI(object):
 
 	def update(self):
 		self.capture_input()
-		# self.print_list(self.menulist)
 
 
 menu = UI()
