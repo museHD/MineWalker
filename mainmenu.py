@@ -277,6 +277,7 @@ class UI(object):
 					time.sleep(1)
 				else:
 					select = True
+					print("Please type your chosen symbol.")
 				while select == True:
 					if msvcrt.kbhit():
 						char = self.capture_input()[0]
