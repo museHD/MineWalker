@@ -335,37 +335,9 @@ class Game(object):
 		self.print_grid(self.player_grid)
 
 
-
+		# Main game loop that captures input and updates grid according to that
 		while self.game_state() == "running":
 			if msvcrt.kbhit():
 				self.capture_input()
 				self.update_grid(self.player_grid)
 		
-
-
-
-		# REFER TO 
-		"""import msvcrt
-		while True:
-		    if msvcrt.kbhit():
-		        key_stroke = msvcrt.getch()
-		        print(key_stroke)   # will print which key is pressed
-
-		from https://www.codespeedy.com/how-to-detect-which-key-is-pressed-in-python/
-		        """
-
-# myGame = Game()
-# myGame.run()
-
-
-""" SNIPPET using numpy """
-# def print_array(array):
-# 	for y in range(len(array)):
-# 		for x in range(len(array)):
-# 			print(array[x][y])
-
-# # board = np.array([rows,cols])
-# board = np.random.randint(1,100,(10,10))
-# print(board)
-# # print(' '.join(str(n) for n in board))
-# print_array(board)
