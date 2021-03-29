@@ -29,30 +29,28 @@ class Game(object):
 		self.score = 0
 
 
+	# Restrict number to a min and max value to stop index error
 	def restrict(self, n, low, high):
 		if n < low:
 			n += (low - n)
 		if n > high:
 			n -= (n - high)
 		return n
+
 	# Takes a 2D array, converts it to a pandas df and prints it to display
-	# TODO: Find out if the entire grid can be reprinted in console
 	def print_grid(self, grid):
-		# time.sleep(0.5)
 		os.system("cls")
 		print()
 
 		df = pd.DataFrame(grid)
-		# print(df)
 		print(df.to_string(index=False, header=False).replace(self.playerChar, color.GREEN + self.playerChar + color.BASE))
 
+	# Does what print_grid does without using cls ~ Secret sauce to no flickering
 	def update_grid(self, grid):
 
-
+		# Moves cursor n number of lines up where n is the length of the grid
 		print('\033[{0}A'.format(self.length+9))
-			
 		df = pd.DataFrame(grid)
-		# print(df)
 		print(df.to_string(index=False, header=False).replace(self.playerChar, color.GREEN + self.playerChar + color.BASE))
 
 	# Generates a simple 2d array
@@ -86,26 +84,24 @@ class Game(object):
 			grid[mineX][mineY] = self.mineChar
 			self.minePos.add((mineX,mineY))
 
-
+	# Depht First Search algorithm
 	def dfs(self, x = 0, y = 0):
+
 		toVisit = self.toVisit
 		self.hiddencopy = copy.copy(self.hidden_grid)
 		self.hiddencopy = self.hidden_grid
 
-		if x == -1:
-			x += 1
-		if y == -1:
-			y +=1
+		# Ensure that x and y don't cause indexErrors
+		self.restrict(x,0,self.length-1)
+		self.restrict(y,0,self.length-1)
 
+		# Increment x and y to check them in the path
 		nextX = x+1
 		nextY = y+1
 
-		if nextX == self.length+1:
-			x-=1
-			nextX -=2
-		if nextY == self.length+1:
-			nextY -=2
-			y-=1
+		self.restrict(nextX,0,self.length-1)
+		self.restrict(nextY,0,self.length-1)
+
 
 		right = (x,nextY)
 		down = (nextX,y)
@@ -115,21 +111,26 @@ class Game(object):
 		# tuple vs list optimisation
 		options = (right, down, up, left)
 
+		# Go through all possible options for current coordinates
 		for option in options:
-			# print(option)
+
+			# If option is safe, then go to the option
 			if option in toVisit:
 				x,y = option
+
+				# Remove from visit list to avoid repition
 				toVisit.remove(option)
-				# self.hiddencopy[x][y] = self.pathChar
-				# self.update_grid(self.hiddencopy)
-				# time.sleep(0.1)
+
+				# Check if path has been found
 				if x == self.length-1 and y == self.length-1:
-					# print("FOUnd")
-					# time.sleep(5)
 					return 0
+
+				# Call dfs again to find next square in the path
 				else:
 					if self.dfs(x,y) == 0:
 						return 0
+
+		# If no path can be found:
 		return 1
 
 	# Calls above DFS to find path
@@ -141,17 +142,22 @@ class Game(object):
 		y = 0
 
 		myPath = []
-		# noPath = True
+		
+		# Create visit list containing every single square
 		self.toVisit = []
 		for x in range(self.length):
 			for y in range(self.length):
 				self.toVisit.append((x,y))
 
+
+		# Remove mine positions from visit list
 		# print(self.toVisit)
 		for eachMine in self.minePos:
 			if eachMine in self.toVisit:
 				# print(eachMine)
 				self.toVisit.remove(eachMine)
+
+		# Run pathfinding algorithm
 		if self.dfs() == 0:
 			# print("YES")
 			return True
@@ -159,7 +165,7 @@ class Game(object):
 			# print('no')
 			return False
 
-
+	# Function to calculate score
 	def calculate_score(self):
 		timeTaken = int(time.time() - self.startTime)
 		score = 1000
@@ -171,7 +177,9 @@ class Game(object):
 		self.score = score
 		return score
 
+	# Checks current game state using player position
 	def game_state(self):
+
 		state = "running"
 		if self.hidden_grid[self.posX][self.posY] == self.mineChar:
 			state = "lose"
@@ -194,16 +202,20 @@ class Game(object):
 		return state
 
 
+	# Move player after getting letter from capture input
 	def move_player(self, direction):
 
 		# IMPLEMENTING MOVELIST
 		direction = direction.lower()
 		moveList = {"d":(0,1), "a":(0,-1), "w":(-1,0), "s":(1,0)}
 		poslist = [(0,1),(0,-1),(-1,0),(1,0)]
+
+		# Keep powerups above 0
 		self.restrict(self.powerups, 0, 10000000)
+
+		# Move player if letter is in movelist
 		if direction in moveList:
 			self.player_grid[self.posX][self.posY] = self.pathChar
-			# self.myPath.append((self.posX, self.posY))
 			addX, addY = moveList[direction]
 			self.posX += addX
 			self.posY += addY
@@ -212,8 +224,8 @@ class Game(object):
 			self.posY = self.restrict(self.posY,0,self.length-1)
 
 			self.player_grid[self.posX][self.posY] = self.playerChar
-			# self.player_grid[]
 
+		# Scan feature
 		elif direction == "q":
 			self.powerups -= 1
 			if self.powerups > 1:
@@ -259,11 +271,16 @@ class Game(object):
 
 			else:
 				print("No Remaining Powerups!        ")
+
+		# Write player character
 		self.player_grid[self.posX][self.posY] = self.playerChar
 
+	# Capture single key input from stack
 	def capture_input(self): 
 
 		key_stroke = msvcrt.getch()
+
+		# If Special character: map each arrow key to wasd
 		if ord(key_stroke) == 224:
 			key = ord(msvcrt.getch())
 			if key == 80:
@@ -277,15 +294,12 @@ class Game(object):
 			else:
 				pass
 
+		# Convert to unicode to make life easier
 		try:
 			key_stroke = (str(key_stroke, 'utf-8'))
-			# print(key_stroke)
 			self.move_player(key_stroke)
 		except UnicodeDecodeError:
 			pass
-
-	# except:
-	# 	pass
 
 	def run(self):
 
@@ -302,8 +316,6 @@ class Game(object):
 		verified = False
 		while verified == False:
 			if self.verify_path() == False:
-				# print(self.toVisit)
-				# verified+=1
 				# print(verified)
 				self.hidden_grid = self.gen_grid()
 				self.set_mines(self.hidden_grid)
