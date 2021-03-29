@@ -1,11 +1,3 @@
-"""
-Play
-High Scores
-Settings
-Credits
-Exit
-"""
-
 import msvcrt
 import os, sys, inspect
 import time
@@ -94,6 +86,7 @@ class UI(object):
 		except:
 			pass
 
+	# Main play function
 	def play(self):
 		self.load_settings()
 		self.cls()
@@ -183,7 +176,7 @@ class UI(object):
 				self.cls()
 				return 0
 		
-
+	# Instructions function
 	def instructions(self):
 		# self.cls()
 		instructions = """Welcome to MineWalker!\n\n{0}Objective:{1}
@@ -199,6 +192,7 @@ class UI(object):
 		self.wait()
 		return 0
 
+	# Leaderboard function
 	def leaderboard(self):
 		self.reorganise_hs()
 		self.highscoreNames=self.highscoreNames[:4]
@@ -208,7 +202,7 @@ class UI(object):
 		print("\n\n[ Press ANY KEY to Return to Main Menu ]")
 		self.wait()
 		return 0
-
+	# Settings function
 	def settings(self):
 		self.currentSelection = 0
 
@@ -296,7 +290,7 @@ class UI(object):
 				self.print_list(menulist)
 
 
-
+	# Credits function
 	def credits(self):
 		credits = """CREDITS:\n
 		\nAdrien Plisson: Inspiration for restrict function\nPraveen Gollakota: Inspiration for Dispatcher method\nRealPython: Basic Python usage and Syntax\nGeeksForGeeks: Class members and Terminal size usage\n\n[ Press ANY KEY to Return to Main Menu ]
@@ -304,13 +298,13 @@ class UI(object):
 		print(credits)
 		self.wait()
 		return 0
-
+	# Game exit
 	def exit(self):
 		self.save_highscore()
 		sys.exit("Thank you for playing my game!")
 		
 
-
+	# Method for printing list
 	def print_list(self, menulist, cls = True):
 		listIndex = 0
 		# clear = '\033[{0}A'.format(len(menulist)+1)
@@ -417,7 +411,7 @@ class UI(object):
 	def update(self):
 		self.capture_input()
 
-
+# Main Control 
 menu = UI()
 menu.print_list(menu.menulist)
 
