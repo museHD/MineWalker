@@ -1,4 +1,4 @@
-<h2 align="center"> MineWalker </h2>
+<h2 align="center"> MineWalker 💣💥</h2>
 
 ## About the Project:
 💣 SDD Assessment - A memory based path finding game in Python, played on the command line.  
