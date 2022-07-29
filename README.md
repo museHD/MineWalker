@@ -17,7 +17,7 @@ Use the following method to start playing:
 Open a terminal,
 ``` 
 cd <PATH FOR INSTALLATION>
-git clone https://github.com/museHD/MultiDefine
+git clone https://github.com/museHD/MineWalker
 pip install -r requirements.txt
 python main.py
 ```
