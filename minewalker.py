@@ -228,9 +228,8 @@ class Game(object):
 		# Scan feature
 		elif direction == "q":
 			self.powerups -= 1
-			if self.powerups > 1:
-				print(f"Remaining Scans: {self.powerups}   \n")
-
+			if self.powerups > -1:  
+				print(f"Remaining Scans: {self.powerups} \n")
 				for scanPoint in poslist:
 					addX, addY = scanPoint
 					addX += self.posX
@@ -268,9 +267,8 @@ class Game(object):
 					self.player_grid[right][up] = self.scanChar
 				else:
 					self.player_grid[right][up] = self.pathChar
-
-			else:
-				print("No Remaining Powerups!        ")
+			else: 
+				print("No Remaining Powerups!")
 
 		# Write player character
 		self.player_grid[self.posX][self.posY] = self.playerChar
