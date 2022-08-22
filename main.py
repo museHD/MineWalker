@@ -111,46 +111,46 @@ class UI(object):
 			self.mygame.powerups = 100
 
 			if self.currentSelection == 0:
-				self.mygame.powerups = 100
-				self.mygame.displayInterval = 2
+				self.mygame.powerups = 30
+				self.mygame.displayInterval = 2.5
 				self.mygame.length = 10
 				self.mygame.nMines = 15
 
 			elif self.currentSelection == 1:
-				self.mygame.displayInterval = 1.3
-				self.mygame.powerups = 12
-				self.mygame.length = 10
-				self.mygame.nMines = 15
+				self.mygame.displayInterval = 2.0
+				self.mygame.powerups = 25
+				self.mygame.length = 12
+				self.mygame.nMines = 17
 
 			elif self.currentSelection == 2:
-				self.mygame.powerups = 10
-				self.mygame.displayInterval = 1
-				self.mygame.length = 10
-				self.mygame.nMines = 15
+				self.mygame.powerups = 20
+				self.mygame.displayInterval = 1.5
+				self.mygame.length = 14
+				self.mygame.nMines = 20
 
 			elif self.currentSelection == 3:
-				self.mygame.length = 13
-				self.mygame.powerups = 10
-				self.mygame.displayInterval = 0.8
-				self.mygame.nMines = 18
+				self.mygame.length = 16
+				self.mygame.powerups = 15
+				self.mygame.displayInterval = 1.2
+				self.mygame.nMines = 25
 
 			elif self.currentSelection == 4:
-				self.mygame.length = 15
+				self.mygame.length = 18
 				self.mygame.powerups = 10
-				self.mygame.displayInterval = 0.8
-				self.mygame.nMines = 25
+				self.mygame.displayInterval = 1.0
+				self.mygame.nMines = 30
 			
 			elif self.currentSelection == 5:
-				self.mygame.length = 17
-				self.mygame.powerups = 7
+				self.mygame.length = 20
+				self.mygame.powerups = 8
 				self.mygame.displayInterval = 0.8
-				self.mygame.nMines = 35
+				self.mygame.nMines = 40
 
 			elif self.currentSelection == 6:
-				self.mygame.length = 20
+				self.mygame.length = 22
 				self.mygame.powerups = 5
 				self.mygame.displayInterval = 0.5
-				self.mygame.nMines = 75
+				self.mygame.nMines = 60
 			else:
 				pass
 
