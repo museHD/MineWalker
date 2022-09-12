@@ -26,6 +26,7 @@ class Game(object):
 		self.minePos = []
 		self.scanChar = "*"
 		self.powerups = 0
+		self.count = 0
 		self.score = 0
 
 
@@ -168,14 +169,14 @@ class Game(object):
 	# Function to calculate score
 	def calculate_score(self):
 		timeTaken = int(time.time() - self.startTime)
-		score = 1000
-		score = score * self.nMines^2
-		score += self.length*1.5
-		score -= timeTaken*1000
+		score = 0
+		score += self.count
+		score -= timeTaken*(1/10)
 		score += self.powerups *15
 		self.restrict(score,0,1000000000)
 		self.score = score
 		return score
+
 
 	# Checks current game state using player position
 	def game_state(self):
